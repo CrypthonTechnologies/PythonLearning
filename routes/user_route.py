@@ -28,11 +28,12 @@ def register_user(user: CreateUser, db: Session = Depends(get_db)):
         )
     hashed_pass = bcrypt_context.hash(user.password)
     new_user = database_model.User(
-        username=user.username, password=hashed_pass)
+        username=user.username, password=hashed_pass  )
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
     return new_user
+
 
 
 # login for user api
@@ -54,7 +55,8 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 def get_me(current_user: database_model.User = Depends(get_current_user)):
     return current_user
 
-
 @router.post("/logout")
 def logout():
     return {"message": "logout successfully"}
+
+

@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 
 
+
 class Product(BaseModel):
     id: int
     name: str
@@ -21,6 +22,7 @@ class User(BaseModel):
     id: int
     username: str
     password: str
+ 
 
     class Config:
         from_attributes = True
@@ -29,3 +31,6 @@ class User(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+
+  
