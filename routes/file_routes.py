@@ -2,13 +2,14 @@ import uuid
 import os
 from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database import SessionLocal
-import database_model
+from db.database import SessionLocal
+import db.database_model as database_model
 from auth import get_current_user
 
 router = APIRouter()
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+
 
 def get_db():
     db = SessionLocal()
@@ -17,10 +18,12 @@ def get_db():
     finally:
         db.close()
 
+
 @router.post("/upload/")
 async def upload_file(
     file: UploadFile = File(...),
-    current_user: database_model.User = Depends(get_current_user),  # ✅ ADD THIS
+    current_user: database_model.User = Depends(
+        get_current_user),  # ✅ ADD THIS
     db: Session = Depends(get_db)
 ):
     # 🔒 1. Sanitize: generate safe unique name
@@ -47,11 +50,11 @@ async def upload_file(
 
 @router.get("/list/")
 async def list_files(
-    current_user: database_model.User = Depends(get_current_user),  # already there
+    current_user: database_model.User = Depends(
+        get_current_user),  # already there
     db: Session = Depends(get_db)
 ):
     files = db.query(database_model.UserFile).filter(
         database_model.UserFile.user_id == current_user.id
     ).all()
     return {"files": [f.original_name for f in files]}
-

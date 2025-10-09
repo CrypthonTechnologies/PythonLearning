@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from model import CreateUser, User, Token
-from database import SessionLocal
-import database_model
+from schemas.model import CreateUser, User, Token
+from db.database import SessionLocal
+import db.database_model as database_model
 from auth import bcrypt_context, create_access_token, get_current_user
 
 router = APIRouter()
@@ -28,12 +28,11 @@ def register_user(user: CreateUser, db: Session = Depends(get_db)):
         )
     hashed_pass = bcrypt_context.hash(user.password)
     new_user = database_model.User(
-        username=user.username, password=hashed_pass  )
+        username=user.username, password=hashed_pass)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
     return new_user
-
 
 
 # login for user api
@@ -55,8 +54,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 def get_me(current_user: database_model.User = Depends(get_current_user)):
     return current_user
 
+
 @router.post("/logout")
 def logout():
     return {"message": "logout successfully"}
-
-

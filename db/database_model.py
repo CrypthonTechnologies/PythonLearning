@@ -12,6 +12,7 @@ class UserFile(Base):
     original_name = Column(String)     # "my_photo.jpg"
     user_id = Column(Integer, ForeignKey("users.id"))
 
+
 class Product(Base):
 
     __tablename__ = "products"
@@ -29,3 +30,11 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     password = Column(String)
+
+
+class Post(Base):
+    __tablename__ = "posts"
+
+    post_id = Column(Integer, primary_key=True, index=True)
+    title = Column(String)
+    description = Column(String)

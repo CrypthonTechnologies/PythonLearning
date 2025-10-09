@@ -1,8 +1,8 @@
 from fastapi import Depends, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
-from model import Product
-from database import SessionLocal, engine
-import database_model
+from schemas.model import Product
+from db.database import SessionLocal, engine
+import db.database_model as database_model
 from sqlalchemy.orm import Session
 from auth import get_current_user
 

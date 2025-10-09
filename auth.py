@@ -2,8 +2,8 @@ from datetime import datetime, timedelta
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from database import SessionLocal
-import database_model
+from db.database import SessionLocal
+import db.database_model as database_model
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
@@ -54,5 +54,3 @@ def get_current_user(token: str = Depends(oauth2_bearer), db: Session = Depends(
     except JWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Token")
-
-
