@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-
+from typing import Optional
 
 class Product(BaseModel):
     id: int
@@ -22,13 +22,12 @@ class User(BaseModel):
     username: str
     password: str
 
-    class Config:
-        from_attributes = True
 
 class Post(BaseModel):
-    post_id: int 
+    post_id: Optional [int] 
     title: str
     description: str
+
 
 class Token(BaseModel):
     access_token: str
