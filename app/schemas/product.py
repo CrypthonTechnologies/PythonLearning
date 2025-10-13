@@ -13,6 +13,6 @@ class ProductResponse(BaseModel):
     name: str
     price: float
     description:  Optional[str] = None
-
-    class Config:
-        from_attributes = True
+    #
+    # class Config:
+    #     from_attributes = True

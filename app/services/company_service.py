@@ -18,6 +18,7 @@ class CompanyService:
         new_company = Company(
             name=company_data.name,
             location=company_data.location,
+            type=company_data.type,
             user_id=user_id
         )
         self.db.add(new_company)
@@ -43,6 +44,7 @@ class CompanyService:
             )
         company.name = company_data.name
         company.location = company_data.location
+        company.type = company_data.type
         self.db.commit()
         self.db.refresh(company)
         return company

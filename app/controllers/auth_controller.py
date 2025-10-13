@@ -4,7 +4,7 @@ from app.schemas.user import UserCreate, UserResponse
 from app.services.user_service import UserService
 from app.database import get_db
 from app.auth import create_access_token, verify_password
-from app.models.user import User  
+from app.models.user import User
 router = APIRouter()
 
 
@@ -20,7 +20,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/token")
 def login(user: UserCreate, db: Session = Depends(get_db)):
-    # ✅ Query using database model
+    # Query using database model
     db_user = db.query(User).filter(User.username == user.username).first()
 
     if not db_user or not verify_password(user.password, db_user.password):
@@ -28,4 +28,4 @@ def login(user: UserCreate, db: Session = Depends(get_db)):
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
     token = create_access_token(db_user.id)
-    return {"access_token": token, "token_type": "bearer"}
+    return {"access_token": token}

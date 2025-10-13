@@ -20,14 +20,3 @@ class UserService:
         self.db.commit()
         self.db.refresh(new_user)
         return new_user
-
-# def login_user(self, user: UserCreate):
-#         db_user = self.db.query(User).filter(User.username == user.username).first()
-#         if not db_user or not verify_password(user.password, db_user.password):
-#             raise HTTPException(
-#                 status_code=status.HTTP_401_UNAUTHORIZED,
-#                 detail="Invalid credentials"
-#             )
-
-#         token = create_access_token(db_user.id)
-#         return {"access_token": token, "token_type": "bearer"}
