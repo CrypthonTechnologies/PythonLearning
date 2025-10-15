@@ -9,7 +9,7 @@ class Company(Base):
     id =Column(Integer, primary_key=True,  index=True)
     name= Column(String)
     location = Column(String)
-    type = Column(String, nullable=True)
+    company_type = Column(String, nullable=True)
     user_id = Column(Integer, ForeignKey("user.id"))
 
 

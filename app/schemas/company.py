@@ -6,13 +6,13 @@ from app.schemas.product import ProductResponse
 class CompanyCreate(BaseModel):
     name: str
     location: str
-    type: Optional[str] = None
+    company_type: Optional[str] = None
 
 class CompanyResponse(BaseModel):
     id: int
     name: str
     location: str
-    type: Optional[str] = None
+    company_type: Optional[str] = None
     products: List[ProductResponse] = []
     #
     # class Config:
