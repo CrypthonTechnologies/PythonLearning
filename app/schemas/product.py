@@ -1,11 +1,11 @@
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel,Field
 
 
 class ProductCreate(BaseModel):
-    name: str
-    price: float
-    description: Optional[str] = None
+    name: str = Field(..., min_length=3, max_length=50, description="Product name")
+    price: float = Field(..., gt=0, description="Price must be greater than 0")
+    description: Optional[str] = Field(None, max_length=200)
 
 
 class ProductResponse(BaseModel):

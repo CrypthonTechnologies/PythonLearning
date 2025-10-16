@@ -10,7 +10,7 @@ class ProductRepository:
         product = Product(company_id,name=name, price=price, description=description)
         self.db.add(product)
         self.db.commit()
-        self.db.refresh(product)
+
         return product
 
     def list_my_product(self):
@@ -30,7 +30,7 @@ class ProductRepository:
         if product:
             self.db.query(Product).filter(Product.id == product_id).update({"name": name, "price": price, "description": description})
             self.db.commit()
-            self.db.refresh(product)
+
         return product
 
 
@@ -41,5 +41,5 @@ class ProductRepository:
         if product:
             self.db.query(Product).filter(Product.id == product_id).delete()
             self.db.commit()
-            self.db.refresh(product)
+
         return product

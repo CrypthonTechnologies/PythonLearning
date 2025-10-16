@@ -19,7 +19,7 @@ class UserRepository:
             user = User(username=username, password=hashed_pw)
             self.db.add(user)
             self.db.commit()
-            self.db.refresh(user)
+
         return user
 
     def delete_user(self, user_id: int):

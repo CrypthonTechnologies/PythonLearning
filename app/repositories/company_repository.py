@@ -17,7 +17,6 @@ class CompanyRepository:
         if not existed:
             self.db.add(company)
             self.db.commit()
-            self.db.refresh(company)
         return company
 
 
@@ -44,7 +43,7 @@ class CompanyRepository:
                 {"name": name, "company_type": company_type, "location": location}
             )
             self.db.commit()
-            self.db.refresh(existed)
+
         return existed
 
 
@@ -57,7 +56,7 @@ class CompanyRepository:
         if existed:
             self.db.query(Company).filter(Company.user_id == user_id).delete()
             self.db.commit()
-            self.db.refresh(existed)
+
         return existed
 
 

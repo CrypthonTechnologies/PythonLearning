@@ -1,8 +1,6 @@
-from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from app.models.product import Product
 from app.repositories.product_repository import ProductRepository
-from app.schemas.product import ProductCreate
+
 
 
 class ProductService:
