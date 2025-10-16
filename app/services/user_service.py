@@ -1,33 +1,23 @@
 from sqlalchemy.orm import Session
-from app.schemas.user import UserCreate
-from app.models.user import User
-from app.auth import get_password_hash, verify_password, create_access_token
 from fastapi import HTTPException, status
+from app.repositories.user_repository import UserRepository
 
 
 class UserService:
     def __init__(self, db: Session):
-        self.db = db
+        self.repo = UserRepository(db)
 
-    def create_user(self, user: UserCreate):
-        db_user = self.db.query(User).filter(
-            User.username == user.username).first()
-        if db_user:
-            raise ValueError("Username already registered")
-        hashed_pw = get_password_hash(user.password)
-        new_user = User(username=user.username, password=hashed_pw)
-        self.db.add(new_user)
-        self.db.commit()
-        self.db.refresh(new_user)
-        return new_user
+    def create_user(self, username: str, hashed_pw: str):
+        if self.repo.create_user(username, hashed_pw):
+            raise HTTPException(status_code=status.HTTP_201_CREATED, detail="User created successfully")
 
-# def login_user(self, user: UserCreate):
-#         db_user = self.db.query(User).filter(User.username == user.username).first()
-#         if not db_user or not verify_password(user.password, db_user.password):
-#             raise HTTPException(
-#                 status_code=status.HTTP_401_UNAUTHORIZED,
-#                 detail="Invalid credentials"
-#             )
+        return self.repo.create_user(username, hashed_pw)
 
-#         token = create_access_token(db_user.id)
-#         return {"access_token": token, "token_type": "bearer"}
+    def get_user(self, user_id: int):
+        me = self.repo.get_by_me(user_id)
+        return me
+
+
+    def delete_user(self, user_id: int):
+        me = self.repo.delete_user(user_id)
+        return me

@@ -11,7 +11,7 @@ from fastapi.security import HTTPAuthorizationCredentials
 
 SECRET_KEY = "af3287c8391bb9f4f7a72feb3b85f72e1d5bd07cbf4fa4ad9497c78412923312"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 7 * 24 * 60
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 bearer_scheme = HTTPBearer()

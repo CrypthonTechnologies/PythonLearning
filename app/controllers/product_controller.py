@@ -18,12 +18,12 @@ def create_product(
 ):
     company_service = CompanyService(db)
     product_service = ProductService(db)
-    company = company_service.get_my_company(current_user.id)
+    company = company_service.get_company(current_user.id)
     if not company:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="no company found")
 
-    return product_service.create_product(company.id, product)
+    return product_service.create_product(company.id, product.name,product.price,product.description)
 
 
 @router.get("/", response_model=list[ProductResponse])
@@ -52,12 +52,13 @@ def update_product_by_id(
         db: Session = Depends(get_db),
         current_user=Depends(get_current_user)):
     product_service = ProductService(db)
-    return product_service.update_product(product_id,product)
+    return product_service.update_product(product_id,product.name,product.price,product.description)
 
 @router.delete("/{product_id}", response_model=ProductResponse)
 def delete_product_by_id(
         product_id: int,
         db: Session = Depends(get_db),
-        current_user=Depends(get_current_user)):
+current_user=Depends(get_current_user)
+        ):
     product_service = ProductService(db)
     return product_service.delete_product(product_id)

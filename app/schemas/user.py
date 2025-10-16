@@ -1,15 +1,19 @@
-from pydantic import BaseModel
+from pydantic import BaseModel,Field
 
 
 class UserCreate(BaseModel):
-    username: str
+    username: str = Field(..., min_length=3, max_length=15, description="User's unique name")
     password: str
 
 
 class UserResponse(BaseModel):
     id: int
     username: str
-    password: str
+
 
     class Config:
         from_attributes = True
+
+
+class TokenResponse(BaseModel):
+    access_token: str

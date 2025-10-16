@@ -1,47 +1,27 @@
-from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from app.models.product import Product
-from app.schemas.product import ProductCreate
+from app.repositories.product_repository import ProductRepository
+
 
 
 class ProductService:
     def __init__(self, db: Session):
-        self.db = db
+        self.repo = ProductRepository(db)
 
-    def create_product(self, company_id: int, product_data: ProductCreate):
-        new_product = Product(
-            name=product_data.name,
-            price=product_data.price,
-            description=product_data.description,
-            company_id=company_id
-        )
-        self.db.add(new_product)
-        self.db.commit()
-        self.db.refresh(new_product)
-        return new_product
+    def create_product(self, company_id: int,name: str,price: float,description: str):
+        created = self.repo.create_my_product(company_id,name,price,description)
+        return created
 
     def list_products(self):
-        products = self.db.query(Product).all()
+        products = self.repo.list_my_product()
         return products
 
     def get_product(self, product_id: int):
-        product = self.db.query(Product).filter(
-            Product.id == product_id).first()
-        if not product:
-            raise HTTPException(status_code=404, detail="Product not found")
+        product = self.repo.get_product_by_id(product_id)
         return product
 
-    def update_product(self, product_id: int, product_data: ProductCreate):
-        product = self.get_product(product_id)
-        product.name = product_data.name
-        product.price = product_data.price
-        product.description = product_data.description
-        self.db.commit()
-        self.db.refresh(product)
+    def update_product(self, product_id: int, name: str,price: float,description: str):
+        product = self.repo.update_my_product(product_id,name,price,description)
         return product
 
     def delete_product(self, product_id: int):
-        product = self.get_product(product_id)
-        self.db.delete(product)
-        self.db.commit()
-        return {"detail": "Product deleted"}
+        product = self.repo.delete_my_product(product_id)

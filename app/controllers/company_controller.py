@@ -15,7 +15,7 @@ def create_company(
     current_user=Depends(get_current_user)
 ):
     service = CompanyService(db)
-    return service.create_company(current_user.id, company)
+    return service.create_company(current_user.id, company.name,company.company_type, company.location)
 
 
 @router.get("/me", response_model=CompanyResponse)
@@ -24,7 +24,7 @@ def get_my_company(
     current_user=Depends(get_current_user)
 ):
     service = CompanyService(db)
-    return service.get_my_company(current_user.id)
+    return service.get_company(current_user.id)
 
 
 @router.put("/me", response_model=CompanyResponse)
@@ -34,7 +34,7 @@ def edit_my_company(
         current_user=Depends(get_current_user)
 ):
     service = CompanyService(db)
-    return service.edit_company(current_user.id, company)
+    return service.edit_company(current_user.id, company.name, company.company_type, company.location)
 
 
 @router.delete("/me", dependencies=[Depends(get_current_user)])

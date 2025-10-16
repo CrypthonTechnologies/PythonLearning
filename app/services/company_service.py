@@ -1,60 +1,28 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from app.models.company import Company
-from app.schemas.company import CompanyCreate
+from app.repositories.company_repository import CompanyRepository
+
 
 
 class CompanyService:
     def __init__(self, db: Session):
-        self.db = db
+        self.repo =  CompanyRepository(db)
 
-    def create_company(self, user_id: int, company_data: CompanyCreate):
-        existing = self.db.query(Company).filter(
-            Company.user_id == user_id).first()
-        if existing:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="user already has a company")
+    def create_company(self, user_id: int,name: str, company_type: str, location: str):
 
-        new_company = Company(
-            name=company_data.name,
-            location=company_data.location,
-            user_id=user_id
-        )
-        self.db.add(new_company)
-        self.db.commit()
-        self.db.refresh(new_company)
-        return new_company
+        existed = self.repo.create_my_company(user_id, name, company_type, location)
+        if not existed:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Company not found")
+        return existed
 
-    def get_my_company(self, user_id: int):
-        company = self.db.query(Company).filter(
-            Company.user_id == user_id).first()
-        if not company:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Company not found")
+    def get_company(self, user_id: int):
+        company = self.repo.get_my_company(user_id)
         return company
 
-    def edit_company(self, user_id: int, company_data: CompanyCreate):
-        company = self.db.query(Company).filter(
-            Company.user_id == user_id
-        ).first()
-        if not company:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="company not found"
-            )
-        company.name = company_data.name
-        company.location = company_data.location
-        self.db.commit()
-        self.db.refresh(company)
-        return company
+    def edit_company(self, user_id: int, name: str, company_type: str, location: str):
+        updated  =self.repo.edit_my_company(user_id, name, company_type, location)
+        return updated
 
     def delete_company(self, user_id: int):
-        company = self.db.query(Company).filter(
-            Company.user_id == user_id
-        ).first()
-        if not company:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="company not found"
-            )
-        self.db.delete(company)
-        self.db.commit()
-        return {"detail": "company deleted"}
+        deleted  = self.repo.delete_my_company(user_id)
+        return deleted
