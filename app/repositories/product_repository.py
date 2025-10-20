@@ -7,7 +7,7 @@ class ProductRepository:
         self.db = db
 
     def create_my_product(self,company_id:int, name: str, price: float, description: str) -> Product:
-        product = Product(company_id,name=name, price=price, description=description)
+        product = Product(company_id=company_id, name=name, price=price, description=description)
         self.db.add(product)
         self.db.commit()
 

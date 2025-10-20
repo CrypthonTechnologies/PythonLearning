@@ -2,8 +2,6 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from app.repositories.company_repository import CompanyRepository
 
-
-
 class CompanyService:
     def __init__(self, db: Session):
         self.repo =  CompanyRepository(db)
