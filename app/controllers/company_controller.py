@@ -27,7 +27,7 @@ def get_my_company(
     return service.get_company(current_user.id)
 
 
-@router.put("/me", response_model=CompanyResponse)
+@router.put("/me")
 def edit_my_company(
         company: CompanyCreate,
         db: Session = Depends(get_db),
@@ -37,7 +37,7 @@ def edit_my_company(
     return service.edit_company(current_user.id, company.name, company.company_type, company.location)
 
 
-@router.delete("/me", dependencies=[Depends(get_current_user)])
+@router.delete("/me")
 def delete_my_company(
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)

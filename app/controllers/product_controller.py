@@ -28,11 +28,12 @@ def create_product(
 
 @router.get("/", response_model=list[ProductResponse])
 def list_product(
+    skip: int = 0, limit: int = 10,
     db: Session = Depends(get_db),
     current_user=Depends(get_current_user)
 ):
     product_service = ProductService(db)
-    return product_service.list_products()
+    return product_service.list_products(skip,limit)
 
 
 @router.get("/{product_id}", response_model=ProductResponse)
@@ -44,8 +45,7 @@ def get_product_by_id(
     product_service = ProductService(db)
     return product_service.get_product(product_id)
 
-
-@router.put("/{product_id}", response_model=ProductResponse)
+@router.put("/{product_id}")
 def update_product_by_id(
         product_id: int,
         product: ProductCreate,
@@ -54,7 +54,7 @@ def update_product_by_id(
     product_service = ProductService(db)
     return product_service.update_product(product_id,product.name,product.price,product.description)
 
-@router.delete("/{product_id}", response_model=ProductResponse)
+@router.delete("/{product_id}")
 def delete_product_by_id(
         product_id: int,
         db: Session = Depends(get_db),

@@ -38,7 +38,7 @@ def me(
     service = UserService(db)
     return service.get_user(current_user.id)
 
-@router.delete("/delete",dependencies=[Depends(get_current_user)])
+@router.delete("/delete")
 def delete( db: Session = Depends(get_db), current_user=Depends(get_current_user)):
     service = UserService(db)
     return service.delete_user(current_user.id)

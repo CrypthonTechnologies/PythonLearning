@@ -11,3 +11,4 @@ class User(Base):
     password = Column(String)
 
     company= relationship("Company",back_populates="user", uselist=False)
+    todos = relationship("Todo", back_populates="user")

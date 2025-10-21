@@ -8,16 +8,32 @@ class UserService:
         self.repo = UserRepository(db)
 
     def create_user(self, username: str, hashed_pw: str):
-        if self.repo.create_user(username, hashed_pw):
-            raise HTTPException(status_code=status.HTTP_201_CREATED, detail="User created successfully")
+        existing_user = self.repo.get_by_username(username)
+        if existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Username already exists"
+            )
 
-        return self.repo.create_user(username, hashed_pw)
+        self.repo.create(username, hashed_pw)
+        return {"message": "User created successfully"}
 
     def get_user(self, user_id: int):
-        me = self.repo.get_by_me(user_id)
-        return me
-
+        user = self.repo.get_by_id(user_id)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+        return user
 
     def delete_user(self, user_id: int):
-        me = self.repo.delete_user(user_id)
-        return me
+        user = self.repo.get_by_id(user_id)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+
+        self.repo.delete(user)
+        return {"message": "User deleted successfully"}
