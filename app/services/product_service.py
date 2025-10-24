@@ -1,6 +1,5 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from app.models.product import Product
 from app.repositories.product_repository import ProductRepository
 
 class ProductService:
@@ -15,8 +14,7 @@ class ProductService:
                 detail="This product already exists for the company"
             )
 
-        product = Product(company_id=company_id, name=name, price=price, description=description)
-        created_product = self.repo.create(product)
+        created_product = self.repo.create(company_id,name,price,description)
         return created_product
 
     def list_products(self, skip: int, limit: int):
@@ -36,17 +34,13 @@ class ProductService:
         if not product:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
 
-        product.name = name
-        product.price = price
-        product.description = description
-
-        updated = self.repo.update(product)
-        return {"message": "Product updated successfully", "data": updated}
+        updated = self.repo.update(product_id,name, price, description)
+        return  updated
 
     def delete_product(self, product_id: int):
         product = self.repo.get_by_id(product_id)
         if not product:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
 
-        self.repo.delete(product)
-        return {"message": "Product deleted successfully"}
+        deleted = self.repo.delete(product)
+        return deleted

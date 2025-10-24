@@ -10,17 +10,24 @@ class CompanyRepository:
     def get_company_by_user_id(self, user_id: int):
         return self.db.query(Company).filter(Company.user_id == user_id).first()
 
-    def create(self, company: Company):
-        self.db.add(company)
+    def create(self,  name:str, company_type:str, location:str):
+        created_company = Company(name=name, company_type=company_type, location=location)
+        self.db.add(created_company)
         self.db.commit()
-        self.db.refresh(company)
-        return company
+        return created_company
 
-    def update(self, company: Company):
+    def update(self,user_id:int,name: str, company_type: str, location: str):
+        updated_company = self.db.query(Company).filter(Company.user_id == user_id).first()
+        if not updated_company:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Company not found")
+        updated_company.name = name
+        updated_company.company_type = company_type
+        updated_company.location = location
+
         self.db.commit()
-        self.db.refresh(company)
-        return company
 
-    def delete(self, company: Company):
+        return updated_company
+
+    def delete(self, company:Company):
         self.db.delete(company)
         self.db.commit()

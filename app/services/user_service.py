@@ -15,8 +15,8 @@ class UserService:
                 detail="Username already exists"
             )
 
-        self.repo.create(username, hashed_pw)
-        return {"message": "User created successfully"}
+        create = self.repo.create(username, hashed_pw)
+        return create
 
     def get_user(self, user_id: int):
         user = self.repo.get_by_id(user_id)
@@ -27,6 +27,13 @@ class UserService:
             )
         return user
 
+    def updated_user(self, user_id: int, username: str, full_name: str,bio:str, profile:str):
+        user = self.get_user(user_id)
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="user not found")
+        updated = self.repo.update(user_id,username, full_name, bio,profile)
+        return updated
+
     def delete_user(self, user_id: int):
         user = self.repo.get_by_id(user_id)
         if not user:
@@ -35,5 +42,5 @@ class UserService:
                 detail="User not found"
             )
 
-        self.repo.delete(user)
-        return {"message": "User deleted successfully"}
+        deleted = self.repo.delete(user)
+        return deleted

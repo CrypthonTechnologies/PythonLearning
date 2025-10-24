@@ -8,10 +8,7 @@ from app.models.user import User
 from app.database import get_db
 from fastapi.security import HTTPAuthorizationCredentials
 
-
-SECRET_KEY = "af3287c8391bb9f4f7a72feb3b85f72e1d5bd07cbf4fa4ad9497c78412923312"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 7 * 24 * 60
+from config import ACCESS_TOKEN_EXPIRE_DAYS, ALGORITHM, SECRET_KEY
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 bearer_scheme = HTTPBearer()
@@ -28,7 +25,7 @@ def get_password_hash(password):
 
 # ---------------- TOKEN CREATION ---------------- #
 def create_access_token(user_id: int):
-    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.utcnow() + timedelta(days=ACCESS_TOKEN_EXPIRE_DAYS)
     to_encode = {"sub": str(user_id), "exp": expire}
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 

@@ -9,6 +9,9 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True)
     password = Column(String)
+    full_name = Column(String, nullable=True)
+    bio = Column(String, nullable=True)
+    profile = Column(String, nullable=True)
 
     company= relationship("Company",back_populates="user", uselist=False)
-    todos = relationship("Todo", back_populates="user")
+
