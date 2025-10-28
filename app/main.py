@@ -21,4 +21,3 @@ app.include_router(product_controller.router,
 app.include_router(todo_controller.router,
                    prefix=f"/api/{version}/todos", tags=["Todo"])
 
-

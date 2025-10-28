@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey,Enum
 from sqlalchemy.orm import relationship
 from app.database import Base
+from app.enum.company_enum import CompanyType
 
 
 class Company(Base):

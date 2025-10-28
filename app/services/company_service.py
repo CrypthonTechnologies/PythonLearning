@@ -12,7 +12,7 @@ class CompanyService:
         if existing:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Company already exists")
 
-        created = self.repo.create(name, company_type, location)
+        created = self.repo.create(user_id,name, company_type, location)
         return  created
 
     def get_company(self, user_id: int):

@@ -7,7 +7,7 @@ class UserService:
     def __init__(self, db: Session):
         self.repo = UserRepository(db)
 
-    def create_user(self, username: str, hashed_pw: str):
+    def create_user(self, username: str, hashed_pw: str, full_name: str, bio: str, profile: str):
         existing_user = self.repo.get_by_username(username)
         if existing_user:
             raise HTTPException(
@@ -15,7 +15,7 @@ class UserService:
                 detail="Username already exists"
             )
 
-        create = self.repo.create(username, hashed_pw)
+        create = self.repo.create(username, hashed_pw,full_name,bio,profile)
         return create
 
     def get_user(self, user_id: int):

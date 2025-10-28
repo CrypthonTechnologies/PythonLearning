@@ -10,8 +10,8 @@ class CompanyRepository:
     def get_company_by_user_id(self, user_id: int):
         return self.db.query(Company).filter(Company.user_id == user_id).first()
 
-    def create(self,  name:str, company_type:str, location:str):
-        created_company = Company(name=name, company_type=company_type, location=location)
+    def create(self, user_id:int, name:str, company_type:str, location:str):
+        created_company = Company(user_id=user_id,name=name, company_type=company_type, location=location)
         self.db.add(created_company)
         self.db.commit()
         return created_company
