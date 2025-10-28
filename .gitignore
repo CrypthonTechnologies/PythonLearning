@@ -1,0 +1,9 @@
+.env
+config.py
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore init files if you don’t want them tracked
+__init__.py
