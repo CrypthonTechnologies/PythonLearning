@@ -1,0 +1,12 @@
+.env
+config.py
+config/.secrets.toml
+.idea
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+**/__pycache__/
+
+# Ignore init files if you don’t want them tracked
+__init__.py
