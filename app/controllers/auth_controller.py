@@ -1,11 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+
+from app.repositories.user_repository import UserRepository
 from app.schemas.user_request import UserCreateRequest, UserLoginRequest, UserUpdateRequest
 from app.schemas.user_response import UserResponse, UserJWTPayload, UserProfileResponse, MessageResponse
 from app.services.user_service import UserService
 from app.database import get_db
 from app.auth import create_access_token, verify_password, get_current_user
 from app.models.user import User
+from app.validations import invalid_credentials_exception, handle_value_error
 from config import config_reader
 
 router = APIRouter()
@@ -18,19 +21,16 @@ def register(user: UserCreateRequest, db: Session = Depends(get_db)):
     try:
         return service.create_user(user_model)
     except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+        handle_value_error(e)
 
 
 @router.post("/token")
 def login(user: UserLoginRequest, db: Session = Depends(get_db)):
-
-    db_user = db.query(User).filter(User.username == user.username).first()
-
+    repo = UserRepository(db)
+    db_user = repo.get_by_username(user.username)
 
     if not db_user or not verify_password(user.password, db_user.password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+        invalid_credentials_exception()
 
     user_token = UserJWTPayload(
         id=db_user.id,
