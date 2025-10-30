@@ -14,23 +14,19 @@ class TodoRepository:
     def get_todo_by_id(self, todo_id: int):
         return self.db.query(Todo).filter(Todo.id == todo_id).first()
 
-    def create(self, title:str,description:str,published:bool):
-        created_todo = Todo(title=title,description=description,published=published)
-        self.db.add(created_todo)
-        self.db.commit()
-        return created_todo
+    def create(self, todo_model):
 
-    def update(self,todo_id:int,title:str,description:str,published:bool):
+        self.db.add(todo_model)
+        return todo_model
+
+    def update(self,todo_id:int,todo_model):
         updated_todo = self.db.query(Todo).filter(Todo.id == todo_id).first()
-        if not updated_todo:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="todo item not found")
+        updated_todo.title = todo_model.title
+        updated_todo.description = todo_model.description
+        updated_todo.published = todo_model.published
 
-        updated_todo.title = title
-        updated_todo.description = description
-        updated_todo.published = published
-        self.db.commit()
         return updated_todo
 
     def delete(self, todo: Todo):
         self.db.delete(todo)
-        self.db.commit()
+

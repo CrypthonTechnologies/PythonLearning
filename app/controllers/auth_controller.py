@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from app.schemas.user import UserCreateRequest, UserResponse, UserLoginRequest, UserProfileResponse, UserUpdateRequest, \
-    MessageResponse, UserJWTPayload
+from app.schemas.user_request import UserCreateRequest, UserLoginRequest, UserUpdateRequest
+from app.schemas.user_response import UserResponse, UserJWTPayload, UserProfileResponse, MessageResponse
 from app.services.user_service import UserService
 from app.database import get_db
-from app.auth import create_access_token, verify_password, get_password_hash, get_current_user
+from app.auth import create_access_token, verify_password, get_current_user
 from app.models.user import User
 from config import config_reader
 
@@ -14,9 +14,9 @@ router = APIRouter()
 @router.post("/register", response_model=UserResponse)
 def register(user: UserCreateRequest, db: Session = Depends(get_db)):
     service = UserService(db)
-    hashed_pw= get_password_hash(user.password)
+    user_model = user.to_model()
     try:
-        return service.create_user(user.username, hashed_pw,user.full_name,user.bio,user.profile)
+        return service.create_user(user_model)
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
@@ -42,8 +42,8 @@ def login(user: UserLoginRequest, db: Session = Depends(get_db)):
     return {"access_token": token}
 
 
-@router.get("/me", response_model=UserResponse)
-def me(
+@router.get("/", response_model=UserResponse)
+def get_me(
         db: Session = Depends(get_db),
         current_user=Depends(get_current_user)):
     service = UserService(db)
@@ -56,7 +56,7 @@ def update(
         current_user=Depends(get_current_user),
         ):
     service = UserService(db)
-    return service.updated_user(current_user.id, user.username,user.full_name, user.bio,user.profile)
+    return service.updated_user(current_user.id,user)
 
 
 @router.delete("/delete",response_model=MessageResponse)

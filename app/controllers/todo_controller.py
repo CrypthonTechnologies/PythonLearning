@@ -3,7 +3,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.auth import get_current_user
 from app.database import get_db
-from app.schemas.todo import TodoResponse, TodoRequest, MessageResponse
+from app.schemas.todo_request import  TodoRequest
+from app.schemas.todo_response import TodoResponse, MessageResponse
 
 from app.services.todo_service import TodoService
 from config import config_reader
@@ -24,9 +25,9 @@ db: Session = Depends(get_db),
 def create(todo : TodoRequest,
            db: Session = Depends(get_db),
          ):
-
     todo_service = TodoService(db)
-    return todo_service.create_todo(todo.title,todo.description,todo.published)
+    todo_model = todo.to_model()
+    return todo_service.create_todo(todo_model)
 
 
 
@@ -37,7 +38,8 @@ def update(todo_id:int,
            ):
 
     todo_service = TodoService(db)
-    return todo_service.update_todo(todo_id,todo.title,todo.description,todo.published)
+    todo_model = todo.to_model()
+    return todo_service.update_todo(todo_id,todo_model)
 
 
 

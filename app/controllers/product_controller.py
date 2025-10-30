@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from app.schemas.product import ProductCreateRequest, ProductResponse, MessageResponse
+from app.schemas.product_request import ProductCreateRequest
+from app.schemas.product_response import ProductResponse, MessageResponse
 from app.services.product_service import ProductService
 from app.services.company_service import CompanyService
 from app.database import get_db
@@ -19,11 +20,10 @@ def create_product(
     company_service = CompanyService(db)
     product_service = ProductService(db)
     company = company_service.get_company(current_user.id)
-    if not company:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="no company found")
+    product_model = product.to_model()
+    product_model.company_id = company.id
 
-    return product_service.create_product(company.id, product.name,product.price,product.description)
+    return product_service.create_product(product_model)
 
 
 @router.get("/", response_model=list[ProductResponse])
@@ -50,7 +50,8 @@ def update_product_by_id(
         product: ProductCreateRequest,
         db: Session = Depends(get_db),):
     product_service = ProductService(db)
-    return product_service.update_product(product_id,product.name,product.price,product.description)
+    product_model = product.to_model()
+    return product_service.update_product(product_id,product_model)
 
 @router.delete("/{product_id}",dependencies=[Depends(get_current_user)],response_model=MessageResponse)
 def delete_product_by_id(

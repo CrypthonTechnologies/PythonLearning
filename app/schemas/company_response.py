@@ -1,12 +1,8 @@
 from pydantic import BaseModel
-from typing import List, Optional
-from app.schemas.product import ProductResponse
+from typing import List
 from app.enum.company_enum import CompanyType
+from app.schemas.product_response import ProductResponse
 
-class CompanyCreateRequest(BaseModel):
-    name: str
-    location: str
-    company_type: CompanyType
 
 class CompanyResponse(BaseModel):
     id: int
@@ -17,4 +13,3 @@ class CompanyResponse(BaseModel):
 
 class MessageResponse(BaseModel):
     message: str
-

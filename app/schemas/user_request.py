@@ -1,13 +1,16 @@
 from pydantic import BaseModel,Field,field_validator
 from typing import Optional
 import re
+from app.auth import get_password_hash
+from app.models.user import User
+
+
 class UserCreateRequest(BaseModel):
     username: str = Field(..., min_length=3, max_length=15)
     password: str = Field(..., min_length=3)
     full_name: Optional[str] = None
     bio: Optional[str] = "no bio provided"
     profile: Optional[str] = None
-
 
     @field_validator("username")
     def validate_username(cls, value):
@@ -40,38 +43,27 @@ class UserCreateRequest(BaseModel):
         # ✅ Special characters are OPTIONAL — no check needed!
         return value
 
+    def to_model(self):
+        hashed_pw = get_password_hash(self.password)
+        return User(
+            username=self.username,
+            password=hashed_pw,
+            full_name=self.full_name,
+            bio=self.bio,
+            profile=self.profile,
+        )
+
 class UserUpdateRequest(BaseModel):
     username: str = Field(..., min_length=3, max_length=15)
     full_name: Optional[str] = None
     bio: Optional[str] = None
     profile: Optional[str] = None
 
-class UserResponse(BaseModel):
-    id: int
-    username: str
+
 
 class UserLoginRequest(BaseModel):
     username: str
     password: str
 
-class UserProfileResponse(BaseModel):
-    id: int
-    username: str
-    full_name: Optional[str] = None
-    bio: Optional[str] = None
-    profile: Optional[str] = None
-
-
-class TokenResponse(BaseModel):
-    access_token: str
-
-
-class UserJWTPayload(BaseModel):
-    id: int
-    username: str
-    full_name: Optional[str] = None
-
-class MessageResponse(BaseModel):
-    message: str
 
 

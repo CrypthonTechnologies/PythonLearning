@@ -19,25 +19,18 @@ class ProductRepository:
             .first()
         )
 
-    def create(self,company_id:int,name:str,price:float,description:str):
-        created_product = Product(company_id=company_id,name=name,price=price,description=description)
-        self.db.add(created_product)
-        self.db.commit()
-        self.db.refresh(created_product)
-        return created_product
+    def create(self,product_model):
+        self.db.add(product_model)
+        return product_model
 
-    def update(self,product_id:int, name:str, price:float,description:str,):
+    def update(self,product_id:int, product_model):
         product = self.db.query(Product).filter(Product.id == product_id).first()
 
-        if not product:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Product not found")
-        product.name = name
-        product.price = price
-        product.description = description
+        product.name = product_model.name
+        product.price = product_model.price
+        product.description = product_model.description
 
-        self.db.commit()
         return product
 
     def delete(self, product: Product):
         self.db.delete(product)
-        self.db.commit()

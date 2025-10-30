@@ -7,8 +7,7 @@ from sqlalchemy.orm import Session
 from app.models.user import User
 from app.database import get_db
 from fastapi.security import HTTPAuthorizationCredentials
-
-from app.schemas.user import UserJWTPayload
+from app.schemas.user_response import UserJWTPayload
 from config import ACCESS_TOKEN_EXPIRE_DAYS, ALGORITHM, SECRET_KEY
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
